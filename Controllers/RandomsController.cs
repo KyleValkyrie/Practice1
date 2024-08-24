@@ -20,11 +20,37 @@ namespace Practice1.Controllers
         }
 
         // GET: Randoms
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string randomsDescription, string searchString)
         {
-              return _context.Randoms != null ? 
-                          View(await _context.Randoms.ToListAsync()) :
-                          Problem("Entity set 'Practice1Context.Randoms'  is null.");
+            if (_context.Randoms == null)
+            {
+                return Problem("Entity set 'RandomsDescription.Randoms'  is null.");
+            }
+
+            // Use LINQ to get list of genres.
+            IQueryable<string> descriptionQuery = from m in _context.Randoms
+                                            orderby m.Description
+                                            select m.Description;
+            var randoms = from m in _context.Randoms
+                         select m;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                randoms = randoms.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
+            }
+
+            if (!string.IsNullOrEmpty(randomsDescription))
+            {
+                randoms = randoms.Where(x => x.Description == randomsDescription);
+            }
+
+            var randomsDescriptionVM = new RandomsDescriptionViewModel
+            {
+                Descriptions = new SelectList(await descriptionQuery.Distinct().ToListAsync()),
+                RandomList = await randoms.ToListAsync()
+            };
+
+            return View(randomsDescriptionVM);
         }
 
         // GET: Randoms/Details/5

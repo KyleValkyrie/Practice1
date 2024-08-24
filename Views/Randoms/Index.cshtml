@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Practice1.Models.Randoms>
+﻿@model Practice1.Models.RandomsDescriptionViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,26 +9,38 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-controller="Randoms" asp-action="Index" method="get">
+    <p>
+        <select asp-for="RandomsDescription" asp-items="Model.Descriptions">
+            <option value="">All</option>
+        </select>
+
+        Title: <input type="text" asp-for="SearchString" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.RandomList![0].Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ReleaseDate)
+                @Html.DisplayNameFor(model => model.RandomList![0].ReleaseDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.RandomList![0].Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Number)
+                @Html.DisplayNameFor(model => model.RandomList![0].Number)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.RandomList!) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
